@@ -2,6 +2,7 @@ package frc.robot;
 
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -68,6 +69,8 @@ public final class Configs {
                 elevatorConfig.Slot0.kS = 0;
                 elevatorConfig.MotionMagic.MotionMagicCruiseVelocity = 100; // Units in RPS
                 elevatorConfig.MotionMagic.MotionMagicAcceleration = 100; // Units in RPS/s
+                elevatorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+                
         }
 
     }

@@ -29,9 +29,9 @@ public final class Constants {
     public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
 
     // Chassis configuration
-    public static final double kTrackWidth = Units.inchesToMeters(26.5);
+    public static final double kTrackWidth = Units.inchesToMeters(24.75);
     // Distance between centers of right and left wheels on robot
-    public static final double kWheelBase = Units.inchesToMeters(26.5);
+    public static final double kWheelBase = Units.inchesToMeters(24.75);
     // Distance between front and back wheels on robot
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
         new Translation2d(kWheelBase / 2, kTrackWidth / 2),
@@ -108,6 +108,22 @@ public final class Constants {
   }
   
   public static final class ElevatorConstants{
-    public static final int kElevatorMotorCanID = 0; // TODO: Change this
+    // Talon FX
+    public static final int kElevatorMotorCanID = 15; // TODO: Change this
+    public static final double kLevel1Position = 0;
+    public static final double kPositionTolerance = 0;
+    public static double kLevel2Position;
+    public static double kLevel3Position;
+    public static double kLevel4Position;
+  }
+  
+  public static final class OuttakeConstants{
+    // Kraken
+    public static final int kOuttakeMotorID = 14;
+  }
+
+  public static final class ClimberConstants{
+    // Kraken
+    public static final int kClimberMotorID = 16;
   }
 }
