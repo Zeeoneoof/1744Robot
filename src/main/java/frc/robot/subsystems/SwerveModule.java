@@ -14,17 +14,23 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 
+
 import frc.robot.Configs;
 
-public class MAXSwerveModule {
+public class SwerveModule {
   private final SparkMax m_drivingSpark;
   private final SparkMax m_turningSpark;
 
   private final RelativeEncoder m_drivingEncoder;
-  private final AbsoluteEncoder m_turningEncoder;
+  private final RelativeEncoder m_turningEncoder;
+  private final int CANcoderID;
+  private final CANcoder m_turningCANCoder;
+  private CANcoderConfiguration m_CANcoderConfig = new CANcoderConfiguration();
 
   private final SparkClosedLoopController m_drivingClosedLoopController;
   private final SparkClosedLoopController m_turningClosedLoopController;
@@ -38,12 +44,17 @@ public class MAXSwerveModule {
    * MAXSwerve Module built with NEOs, SPARKS MAX, and a Through Bore
    * Encoder.
    */
-  public MAXSwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset) {
+  public SwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset, int CANcoderID) {
     m_drivingSpark = new SparkMax(drivingCANId, MotorType.kBrushless);
     m_turningSpark = new SparkMax(turningCANId, MotorType.kBrushless);
 
     m_drivingEncoder = m_drivingSpark.getEncoder();
-    m_turningEncoder = m_turningSpark.getAbsoluteEncoder();
+    m_turningEncoder = m_turningSpark.getEncoder();
+    this.CANcoderID = CANcoderID;
+    m_turningCANCoder = new CANcoder(CANcoderID);
+    m_CANcoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
+    m_turningCANCoder.getConfigurator().apply(m_CANcoderConfig);
+    m_turningEncoder.setPosition(Rotation2d.fromRotations(m_turningCANCoder.getAbsolutePosition().getValueAsDouble()).getRadians());
 
     m_drivingClosedLoopController = m_drivingSpark.getClosedLoopController();
     m_turningClosedLoopController = m_turningSpark.getClosedLoopController();
@@ -72,7 +83,12 @@ public class MAXSwerveModule {
     return new SwerveModuleState(m_drivingEncoder.getVelocity(),
         new Rotation2d(m_turningEncoder.getPosition() - m_chassisAngularOffset));
   }
-
+  /**
+   * Updates the state of the turning encoder
+   */
+  public void updateEncoderState(){
+    m_turningEncoder.setPosition(Rotation2d.fromRotations(m_turningCANCoder.getAbsolutePosition().getValueAsDouble()).getRadians());
+  }
   /**
    * Returns the current position of the module.
    *
